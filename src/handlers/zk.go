@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -140,12 +139,14 @@ func ListPath(w http.ResponseWriter, r *http.Request, params httprouter.Params) 
 		content := Content{}
 		content.Content = string(dataB[:])
 		content.Stat = stat
-		cnt, err := json.Marshal(content);
-		if err != nil {
-			log.Panic("marshal content errror", err)
-			return
-		}
-		zktreeNodeInfo.Content = string(cnt[:]);
+		//cnt, err := json.Marshal(content);
+		//if err != nil {
+		//	log.Panic("marshal content errror", err)
+		//	return
+		//}
+		zktreeNodeInfo.Content = string(dataB[:]);
+		zktreeNodeInfo.Stat = stat;
+		//zktreeNodeInfo.Content = string(cnt[:]);
 		subNodes := []*ZkTreeNodeInfo{}
 		for _, v := range paths {
 			subNodeInfo := &ZkTreeNodeInfo{}

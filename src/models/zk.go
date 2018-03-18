@@ -32,9 +32,10 @@ type Content struct {
 }
 
 type ZkTreeNodeInfo struct {
-	Name     string `json:"name"`
-	Path     string `json:"path"`
-	Content  string `json:"content"`
+	Name     string   `json:"name"`
+	Path     string   `json:"path"`
+	Content  string   `json:"content"`
+	Stat     *zk.Stat `json:"stat"`
 	Children []*ZkTreeNodeInfo
 }
 
