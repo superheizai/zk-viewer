@@ -139,7 +139,7 @@ func (zkPool *ZkPool) Get() (*ZkConn, error) {
 	go zkPool.pinPoint(time.Now().Unix())
 	select {
 	case conn := <-zkPool.Coons:
-		log.Println("conn is status " + conn.State().String())
+		log.Println("exist conn is status " + conn.State().String())
 		return conn, nil
 	default:
 		zkPool.Mux.Lock()
@@ -150,7 +150,7 @@ func (zkPool *ZkPool) Get() (*ZkConn, error) {
 				log.Fatal(err)
 				return nil, err
 			}
-			log.Println("conn is status " + conn.State().String())
+			log.Println("new conn is status " + conn.State().String())
 
 			zkConn := ZkConn{conn}
 			zkPool.current++
@@ -162,7 +162,7 @@ func (zkPool *ZkPool) Get() (*ZkConn, error) {
 					log.Fatal("can't get connection %s after 5S", zkPool.Url)
 					return nil, TimeOutError
 				case conn := <-zkPool.Coons:
-					log.Println("conn is status " + conn.State().String())
+					log.Println("wait conn is status " + conn.State().String())
 
 					return conn, nil
 				}

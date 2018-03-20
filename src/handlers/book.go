@@ -55,7 +55,7 @@ func writeOKResponse(w http.ResponseWriter, m interface{}) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With")
-	w.Header().Set("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(&JsonResponse{Data: m}); err != nil {
 		writeErrorResponse(w, http.StatusInternalServerError, "Internal Server Error")
@@ -68,7 +68,7 @@ func writeErrorResponse(w http.ResponseWriter, errorCode int, errorMsg string) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With")
-	w.Header().Set("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS")
 	w.WriteHeader(errorCode)
 	json.
 		NewEncoder(w).
@@ -79,8 +79,8 @@ func writeErrorResponse(w http.ResponseWriter, errorCode int, errorMsg string) {
 func populateModelFromHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params, model interface{}) error {
 	//body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
 
-	decoder:=json.NewDecoder(r.Body)
-	err:=decoder.Decode(model)
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(model)
 	if err != nil {
 		return err
 	}

@@ -76,6 +76,14 @@ func UpdateZk(w http.ResponseWriter, r *http.Request, params httprouter.Params) 
 	writeOKResponse(w, Update(server))
 }
 
+func OptionsRequest(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS")
+	w.WriteHeader(http.StatusOK)
+}
+
 func DeleteZk(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 
 	server := &Server{}

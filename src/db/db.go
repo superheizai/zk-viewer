@@ -15,6 +15,7 @@ import (
 	//"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/larspensjo/config"
 )
 
 var Db *sql.DB
@@ -32,12 +33,38 @@ var Cache map[string]*models.Server = make(map[string]*models.Server)
 //
 //}
 
-func InitDb() {
+var TOPIC = make(map[string]string)
+
+func InitDb(env string) {
 
 	log.Print("init method executed")
 
-	var err error
-	Db, err = sql.Open("mysql", "root:root@tcp(10.9.20.111)/rock?charset=utf8&parseTime=true")
+	cfg, err := config.ReadDefault("./config.ini")
+	if err != nil {
+		log.Fatalf("Fail to find", env, err)
+	}
+	//set config file std End
+
+	//Initialized topic from the configuration
+	if cfg.HasSection(env) {
+		section, err := cfg.SectionOptions(env)
+		if err == nil {
+			for _, v := range section {
+				options, err := cfg.String(env, v)
+				if err == nil {
+					TOPIC[v] = options
+				}
+			}
+		}
+	}
+
+	//var err error
+	// dev
+	Db, err = sql.Open("mysql", TOPIC["db"])
+	// local
+	//Db, err = sql.Open("mysql", "root:root@tcp(10.9.20.111)/rock?charset=utf8&parseTime=true")
+	//pro
+	//Db, err = sql.Open("mysql", "root:root@tcp(10.9.20.111)/rock?charset=utf8&parseTime=true")
 
 	if err != nil {
 		log.Fatal("connect to mysql failed")
