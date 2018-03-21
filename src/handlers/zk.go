@@ -16,6 +16,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/samuel/go-zookeeper/zk"
+	"time"
 )
 
 //list zk nodes
@@ -143,17 +144,21 @@ func ListPath(w http.ResponseWriter, r *http.Request, params httprouter.Params) 
 
 		zktreeNodeInfo.Name = filepath.Base(path)
 		zktreeNodeInfo.Path = path
-
-		content := Content{}
-		content.Content = string(dataB[:])
-		content.Stat = stat
+		//
+		//content := Content{}
+		//content.Content = string(dataB[:])
+		//content.Stat = stat
 		//cnt, err := json.Marshal(content);
 		//if err != nil {
 		//	log.Panic("marshal content errror", err)
 		//	return
 		//}
+
+		zkStat := new(ZkStat)
+		zkStat.Version = stat.Version
+
 		zktreeNodeInfo.Content = string(dataB[:]);
-		zktreeNodeInfo.Stat = stat;
+		zktreeNodeInfo.Stat = copy(stat);
 		//zktreeNodeInfo.Content = string(cnt[:]);
 		subNodes := []*ZkTreeNodeInfo{}
 		for _, v := range paths {
@@ -174,6 +179,25 @@ func ListPath(w http.ResponseWriter, r *http.Request, params httprouter.Params) 
 		writeErrorResponse(w, 0, "path not exist");
 	}
 
+}
+
+func copy(stat *zk.Stat) *ZkStat {
+	tm := time.Unix(stat.Ctime/1000, 0)
+	zkStat := new(ZkStat);
+	zkStat.Version = stat.Version
+	zkStat.Aversion = stat.Aversion
+	zkStat.Ctime = tm.Format("2006-01-02 15:04:05")
+	zkStat.Cversion = stat.Cversion
+	zkStat.Czxid = stat.Czxid
+	zkStat.DataLength = stat.DataLength
+	zkStat.EphemeralOwner = stat.EphemeralOwner
+	tm = time.Unix(stat.Mtime/1000, 0)
+	zkStat.Mtime = tm.Format("2006-01-02 15:04:05")
+	zkStat.Mzxid = stat.Mzxid
+	zkStat.NumChildren = stat.NumChildren
+	zkStat.Pzxid = stat.Pzxid
+
+	return zkStat;
 }
 
 //list zk nodes

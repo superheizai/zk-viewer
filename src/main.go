@@ -7,6 +7,10 @@ import (
 	. "common"
 	. "db"
 	. "router"
+	"os/signal"
+	"syscall"
+	"fmt"
+	"os"
 )
 
 func main() {
@@ -16,7 +20,31 @@ func main() {
 	router := NewRouter(AllRoutes())
 	Init(*env)
 	defer Close()
-	log.Fatal(http.ListenAndServe(":8080", router))
+	sigs := make(chan os.Signal, 1)
+	done := make(chan bool, 1)
+
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: router,
+	}
+
+	go func() {
+		sig := <-sigs
+		fmt.Println()
+		fmt.Println(sig)
+		//Close()
+		server.Close()
+		done <- true
+	}()
+
+	//本来直接使用http去监听端口并启动，但是这样没有任何返回值，没有办法优雅关闭http服务,现在使用server
+	//log.Fatal(http.ListenAndServe(":8080", router))
+	go log.Fatal(server.ListenAndServe());
+	fmt.Println("awaiting signal")
+	<-done
+	fmt.Println("exiting")
 
 }
 
@@ -26,6 +54,10 @@ func Init(env string) {
 }
 
 func Close() {
+	fmt.Println("begin release")
+
 	Db.Close()
 	ZkPoolsInstance.Close()
+	fmt.Println("end release")
+
 }

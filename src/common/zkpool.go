@@ -178,8 +178,10 @@ func (zkPool *ZkPool) pinPoint(cur int64) {
 func (zkPool *ZkPool) Close() {
 	zkPool.Mux.Lock()
 	defer zkPool.Mux.Unlock()
+
 	for conn := range zkPool.Coons {
 		conn.Close()
 	}
-
+	close(zkPool.times)
+	close(zkPool.Coons)
 }
