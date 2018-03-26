@@ -28,9 +28,15 @@ func AllRoutes() Routes {
 		Route{"Bookshow", "POST", "/books", BookCreate},
 
 		Route{"Children", "GET", "/api/zk/cluster/:cluster", ListPath},
-		Route{"UpdateZkNode", "POST", "/api/zk/cluster/:cluster/createZkNode/", CreateZkNode},
-		Route{"DeleteZkNode", "POST", "/api/zk/cluster/:cluster/deleteZkNode/", DeleteZkNode},
-		Route{"ReadZkNode", "GET", "/api/zk/cluster/:cluster/path/:path/node", ReadZkNode},
+		//Route{"UpdateZkNode", "POST", "/api/zk/cluster/:cluster/createZkNode/", CreateZkNode},
+		//Route{"DeleteZkNode", "POST", "/api/zk/cluster/:cluster/deleteZkNode/", DeleteZkNode},
+		//Route{"ReadZkNode", "GET", "/api/zk/cluster/:cluster/path/:path/node", ReadZkNode},
+		//
+
+		Route{"CreateZkNode", "POST", "/api/zks/createZkNode", CreateZkNode},
+		//Route{"UpdateZkNode", "POST", "/api/zk/cluster/:cluster/updateZkNode/", UpdateZkNode},
+		Route{"DeleteZkNode", "POST", "/api/zks/deleteZkNode", DeleteZkNode},
+		Route{"ReadZkNode", "GET", "/api/zks/cluster/:cluster/path/:path/node", ReadZkNode},
 
 		Route{"zks", "GET", "/api/zks", ZksNew},
 		Route{"createZk", "POST", "/api/zks/createZk", CreateZk},

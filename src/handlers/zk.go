@@ -17,6 +17,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/samuel/go-zookeeper/zk"
 	"time"
+	"sort"
 )
 
 //list zk nodes
@@ -172,7 +173,9 @@ func ListPath(w http.ResponseWriter, r *http.Request, params httprouter.Params) 
 			}
 			subNodes = append(subNodes, subNodeInfo)
 		}
+		sort.Sort(ChildrenSlice(subNodes))
 		zktreeNodeInfo.Children = subNodes
+
 		writeOKResponse(w, zktreeNodeInfo)
 
 	} else {
@@ -294,11 +297,12 @@ func CreateZkNode(w http.ResponseWriter, r *http.Request, params httprouter.Para
 
 	str, err := CreateDepthNode(zkNode.Path, b1, 0, zkNode.Cluster)
 	if err != nil {
+		log.Println("create zk node error", err.Error())
 		writeErrorResponse(w, http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 
-	log.Print(str)
+	writeOKResponse(w, str)
 }
 
 func CreateDepthNode(path string, data []byte, flag int32, cluster string) (string, error) {
@@ -365,7 +369,12 @@ func DeleteZkNode(w http.ResponseWriter, r *http.Request, params httprouter.Para
 
 	defer conn.Close()
 
-	conn.Delete(idInfo.Path, -1);
+	err := conn.Delete(idInfo.Path, -1);
+	if err != nil {
+		writeErrorResponse(w, 500, err.Error());
+	}
+
+	writeOKResponse(w, "")
 }
 
 //conn, _, err := zk.Connect([]string{"127.0.0.1:2181"}, time.Second)

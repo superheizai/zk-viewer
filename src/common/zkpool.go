@@ -159,7 +159,7 @@ func (zkPool *ZkPool) Get() (*ZkConn, error) {
 			for {
 				select {
 				case <-time.After(5 * time.Second):
-					log.Fatal("can't get connection %s after 5S", zkPool.Url)
+					log.Panic("can't get connection %s after 5S", zkPool.Url)
 					return nil, TimeOutError
 				case conn := <-zkPool.Coons:
 					log.Println("wait conn is status " + conn.State().String())

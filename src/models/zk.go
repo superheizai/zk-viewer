@@ -1,6 +1,9 @@
 package models
 
-import "github.com/samuel/go-zookeeper/zk"
+import (
+	"github.com/samuel/go-zookeeper/zk"
+	"strings"
+)
 
 type Zk struct {
 	// The main identifier for the Book. This will be unique.
@@ -16,7 +19,7 @@ type ZkNode struct {
 
 type ZkNodeInfo struct {
 	ZkNode
-	Cluster string
+	Cluster string `json:"cluster"`
 }
 
 //type ZkTreeNode struct {
@@ -37,6 +40,17 @@ type ZkTreeNodeInfo struct {
 	Content  string  `json:"content"`
 	Stat     *ZkStat `json:"stat"`
 	Children []*ZkTreeNodeInfo
+}
+type ChildrenSlice []*ZkTreeNodeInfo
+
+func (c ChildrenSlice) Len() int {
+	return len(c)
+}
+func (c ChildrenSlice) Swap(i, j int) {
+	c[i], c[j] = c[j], c[i]
+}
+func (c ChildrenSlice) Less(i, j int) bool {
+	return (strings.Compare(c[i].Path, c[j].Path) == -1)
 }
 
 type Server struct {
