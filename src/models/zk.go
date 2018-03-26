@@ -50,7 +50,7 @@ func (c ChildrenSlice) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
 }
 func (c ChildrenSlice) Less(i, j int) bool {
-	return (strings.Compare(c[i].Path, c[j].Path) == -1)
+	return (strings.Compare(strings.ToLower(c[i].Path), strings.ToLower(c[j].Path)) == -1)
 }
 
 type Server struct {
